@@ -3,6 +3,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <interruptions.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -80,25 +81,51 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+
+
+static int i = 0;
+char *video = (char *) 0xB8000;
+
+void tickHandler() {
+	video[i++] = i;	
+}
+
+void sti();
+void irq0Handler();
+void setPicMaster(uint16_t);
+
+typedef void (*handler_t)(void);
+
+handler_t handlers[] = {tickHandler};
+ 
+void irqDispatcher(int irq) {
+	handlers[irq]();
+}
+
 int main()
 {	
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
+	//iSetHandler(0x20, (uint64_t) irq0Handler); ----> colocamos el indice de la interrupcion, y su funcion de rutina
+	
+	//iSetHandler(0x21, (uint64_t) irq1Handler)  ----> Asi debería empezar el de teclado
+	
+	//setPicMaster(0xFE); ----> quedan todos deshabilitados menos el timer tick ? el 0xFE a que registro se lo esta dando ?
+	
+	//sti(); ----> habilito interrupciones, como las deshabilito todas, y si quiero solo deshabilitar algunas de hardware y dejar otras,
+	//			   seria con el parametro que se le pasa al setPicMaster ? 
 
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
 
-	ncPrint("[Finished]");
+	while (1) {
+		int k = 0;
+		while(k < 1000*1000*20*5) {
+			k++;
+		}
+		ncPrintHex(i);
+	}
+	ncPrintFormat("Hola mundo", 8, 4);
+	ncNewline();
+	ncPrint("Hora actual: ");
+	ncPrintSystemHour();
+	ncNewline();
 	return 0;
 }
+

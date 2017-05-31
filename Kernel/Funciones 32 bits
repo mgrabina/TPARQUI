@@ -1,0 +1,119 @@
+GLOBAL closefile
+GLOBAL createfile
+GLOBAL openfile
+GLOBAL readfile
+GLOBAL writefile
+
+section .text
+
+closefile:
+    push ebp
+    mov ebp, esp
+    push ebx
+    mov eax, 6
+    mov DWORD ebx, [ebp + 8]
+    int 80h
+    pop ebx
+    pop ebp
+    ret
+
+createfile:
+    push ebp
+    mov ebp, esp
+    push ebx
+    mov eax, 8
+    mov DWORD ebx, [ebp + 8]
+    mov DWORD ecx, [ebp + 12]
+    int 80h
+    pop ebx
+    pop ebp
+    ret
+
+openfile:
+    push ebp
+    mov ebp,esp
+    push ebx
+    mov eax, 5
+    mov DWORD ebx, [ebp + 8]
+    mov DWORD ecx, [ebp + 12]
+    mov DWORD edx, [ebp + 16]
+    int 80h
+    pop ebx
+    pop ebp
+    ret
+
+readfile:
+    push ebp
+    mov ebp, esp
+    push ebx
+    mov eax, 3
+    mov DWORD ebx, [ebp + 8]
+    mov DWORD ecx, [ebp + 12]
+    mov DWORD edx, [ebp + 16]
+    int 80h
+    pop ebx
+    pop ebp
+    ret
+
+writefile:
+    push ebp
+    mov ebp, esp
+    push ebx
+    mov eax, 4
+    mov DWORD ebx, [ebp + 8]
+    mov DWORD ecx, [ebp + 12]
+    mov DWORD edx, [ebp + 16]
+    int 80h
+    pop ebx
+    pop ebp
+    ret
+
+C:
+#include <stdio.h>
+#include <stdlib.h>
+#define ERROR -1
+int closefile(int);
+int createfile(const char *, int);
+int openfile(const char *, int, int);
+int writefile(int,const char *, int);
+int readfile(int, char *, int);
+
+int close(int fd){
+    return closefile(fd);
+}
+
+int open(const char * name, int mode, int permissions){
+    int verificacion;
+
+    verificacion = openfile(name, mode, permissions);
+
+    if( verificacion == ERROR)
+        return createfile(name, permissions);
+    else
+        return verificacion;
+}
+
+int write(int fd,const char * message, int bytes){
+    return writefile(fd, message, bytes);
+}
+
+int read(int fd, char * buffer, int bytes){
+    return readfile(fd, buffer, bytes);
+}
+
+int main(void){
+    char message[]="Caraplejic";
+    char recieve[11];
+    int fd = open("player",2, 777);
+    int bytes = write(fd, message, 11);
+    printf("El retorno del open dio: %d\n", fd);
+    printf("Se escribieron: %d\n", bytes);
+    int closed = close(fd);
+    fd = open("player",2,777);
+    int rel = read(3, recieve, bytes);
+    printf("Se leyeron: %d\n", rel);
+    printf("La cadena leida es: %s\n", recieve);
+    int closed = close(fd);
+    printf("El retorno de closed es: %d\n", closed);
+    return 0;
+}
