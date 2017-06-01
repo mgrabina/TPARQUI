@@ -34,14 +34,16 @@
 	pop rax
 %endmacro
 
----> Estan bien colocadas las macros ?
 
-%macro irqHandler 1  ----> que estaria haciendo esta macro ? y porque esta en una macro y no directamente en el libasm.asm ?
-	pushaq           ----> pushea registros
-
-	mov rdi, %1      ----> y estas 4 lines que harian ?
-	call irqDispatcher  
+%macro irqKeyBoardHandler 1  		;----> que estaria haciendo esta macro ? y porque esta en una macro y no directamente en el libasm.asm ?
+							 		;   El 1 es porque recibe 1 argumento que si vemos en irq1Handler es el 0
+	pushaq           				;----> pushea registros
 	
+
+	mov rdi, %1      				;----> y estas 4 lines que harian ?
+									;	   %1 significa el primer argumento, que en este caso es el 0
+	call irqDispatcher
+
 	mov al, 20h ; EOI
 	out 20h, al
 	
@@ -49,8 +51,3 @@
 
 	iretq
 %endmacro
-
-% macro irqHandler 2
-		pushaq
-		
-		in al,60h  ---> Esto seria para pedir una tecla ? O para que funcionaria bien ?

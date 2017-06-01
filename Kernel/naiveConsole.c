@@ -10,6 +10,7 @@ static const uint32_t height = 25 ;
 
 int getSystemHour();
 
+
 void ncPrint(const char * string)
 {
 	int i;

@@ -4,6 +4,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <interruptions.h>
+#include <keyboardDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -86,45 +87,38 @@ void * initializeKernelBinary()
 static int i = 0;
 char *video = (char *) 0xB8000;
 
-void tickHandler() {
-	video[i++] = i;	
-}
 
+void irqKeyboardHandler();
 void sti();
-void irq0Handler();
 void setPicMaster(uint16_t);
+void keyboardHandler();
 
 typedef void (*handler_t)(void);
 
-handler_t handlers[] = {tickHandler};
+handler_t handlers[] = {keyboardHandler};
  
 void irqDispatcher(int irq) {
+	ncPrint("ENTRE ACA");
 	handlers[irq]();
 }
 
 int main()
 {	
-	//iSetHandler(0x20, (uint64_t) irq0Handler); ----> colocamos el indice de la interrupcion, y su funcion de rutina
-	
-	//iSetHandler(0x21, (uint64_t) irq1Handler)  ----> Asi debería empezar el de teclado
-	
-	//setPicMaster(0xFE); ----> quedan todos deshabilitados menos el timer tick ? el 0xFE a que registro se lo esta dando ?
-	
-	//sti(); ----> habilito interrupciones, como las deshabilito todas, y si quiero solo deshabilitar algunas de hardware y dejar otras,
-	//			   seria con el parametro que se le pasa al setPicMaster ? 
+	iSetHandler(0x21, (uint64_t) irqKeyboardHandler);  //----> Asi debería empezar el de teclado
+	setPicMaster(0xFD); //----> quedan todos deshabilitados menos el timer tick ? el 0xFE a que registro se lo esta dando ?
+	sti(); //----> habilito interrupciones, como las deshabilito todas, y si quiero solo deshabilitar algunas de hardware y dejar otras,
+		   //	   seria con el parametro que se le pasa al setPicMaster ? 
 
 
-	while (1) {
-		int k = 0;
-		while(k < 1000*1000*20*5) {
-			k++;
-		}
-		ncPrintHex(i);
-	}
+	//while (1) {
+	//	int k = 0;
+	//	while(k < 1000*1000*20) {
+	//		k++;
+	//	}
+	//	ncPrintHex(i);
+	//}
 	ncPrintFormat("Hola mundo", 8, 4);
 	ncNewline();
-	ncPrint("Hora actual: ");
-	ncPrintSystemHour();
 	ncNewline();
 	return 0;
 }
