@@ -99,11 +99,12 @@ void irq12Handler();
 void setPicMaster(uint16_t);
 void setPicSlave(uint16_t);
 void keyboardHandler();
-void mouseStart();
+void mouseHandler();
+
 
 typedef void (*handler_t)(void);
 
-handler_t handlers[] = {tickHandler,keyboardHandler, mouseStart};
+handler_t handlers[] = {tickHandler,keyboardHandler, mouseHandler};
  
 void irqDispatcher(int irq) {
 	handlers[irq]();
