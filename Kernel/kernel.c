@@ -114,7 +114,7 @@ int main()
 {	
 	iSetHandler(0x20, (uint64_t) irq0Handler);
 	iSetHandler(0x21, (uint64_t) irq1Handler);
-	iSetHandler(0x22, (uint64_t) irq12Handler);
+	iSetHandler(0x2C, (uint64_t) irq12Handler);
 	
 	setPicMaster(0xFC);
 	setPicSlave(0xF7);
