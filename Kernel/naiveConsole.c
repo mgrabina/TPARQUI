@@ -8,9 +8,6 @@ static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
 
-int getSystemHour();
-
-
 void ncPrint(const char * string)
 {
 	int i;
@@ -19,35 +16,23 @@ void ncPrint(const char * string)
 		ncPrintChar(string[i]);
 }
 
-void ncPrintFormat(const char * string, int background, int font){
-
+void ncPrintFormat(const char* string, int background, int font){
 	int i;
-	char format = 16 * background + font;
-	for(i = 0; string[i] != 0; i++){
+	char format = 16*background+font;
+	for(i=0; string[i] != 0; i++)
 		ncPrintCharFormat(string[i], format);
-	}
-
 }
-
-void ncPrintChar(char character)
-{
-	*currentVideo = character;
-	currentVideo += 2;
-}
-
-//Como podemos ver en esta funcion se imprime primero el caracter y luego su formato (color y fondo)
-
-void ncPrintCharFormat(char character,char format ){
+void ncPrintCharFormat(char character, char format){
 	*currentVideo = character;
 	currentVideo++;
 	*currentVideo = format;
 	currentVideo++;
 }
 
-void ncPrintSystemHour(){
-	char * hora = (char)getSystemHour() + 48;
-	ncPrint(hora);	
-
+void ncPrintChar(char character)
+{
+	*currentVideo = character;
+	currentVideo += 2;
 }
 
 void ncNewline()

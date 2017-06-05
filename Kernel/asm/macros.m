@@ -1,3 +1,4 @@
+
 %macro pushaq 0
 	push rax
 	push rbx
@@ -35,15 +36,12 @@
 %endmacro
 
 
-%macro irqKeyBoardHandler 1  		;----> que estaria haciendo esta macro ? y porque esta en una macro y no directamente en el libasm.asm ?
-							 		;   El 1 es porque recibe 1 argumento que si vemos en irq1Handler es el 0
-	pushaq           				;----> pushea registros
+%macro irqHandler 1
+	pushaq
 	
-
-	mov rdi, %1      				;----> y estas 4 lines que harian ?
-									;	   %1 significa el primer argumento, que en este caso es el 0
+	mov rdi, %1
 	call irqDispatcher
-
+	
 	mov al, 20h ; EOI
 	out 20h, al
 	

@@ -1,5 +1,5 @@
+#include <shell.h>
 #include <stdint.h>
-#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
@@ -56,32 +56,38 @@ static unsigned char shiftedKeyboard[128] =
 static char buffer[BUFFERSIZE];
 static int current=0;
 static int shifted;
+static int keyReleasedPressed;
+static int key;
+static int keyToPrint=0;
 
 void keyboardHandler(){
-  ncPrint("ENTRE ACA");
-	int key = getKey() & 0x80, keyToPrint=0;
+	key = getKey();
+  keyToPrint = 0;
+  keyReleasedPressed = key & 0x80;
+  if(keyboard[key] == '\n'){
+    analizeBuffer(buffer);
+    current = 0;
+  }
 	if(key == RSHIFT){
 		shifted = 1;
 	}else if(key == RSHIFT_RELEASE){
 		shifted = 0;
-	}
-	if(!shifted)
-		keyToPrint = keyboard[key];
-	else
-		keyToPrint = shiftedKeyboard[key];
-	if(keyToPrint != 0){
-		if(current == BUFFERSIZE-1)
-			current = 0;
-		buffer[current++] = keyToPrint;	
 	}else{
-		//Keyboard value 0 if it isn't printable	
-	}
-	ncPrintChar(buffer[current-1]);	
+    if(!keyReleasedPressed){
+    	if(!shifted)
+    		keyToPrint = keyboard[key];
+    	else
+    		keyToPrint = shiftedKeyboard[key];
+    	if(keyToPrint != 0){
+    		if(current == BUFFERSIZE-1){
+    			current = 0;
+    		}
+          buffer[current++] = keyToPrint;
+          ncPrintCharFormat(buffer[current-1], 48);
+        
+    	}else{
+    		//Keyboard value 0 if it isn't printable	
+    	}
+    }
+  }  
 }
-
-int getNextKey(){
-	if(current == BUFFERSIZE){
-		current = 0;
-	}
-	return buffer[current-1];
-} 

@@ -1,28 +1,28 @@
 GLOBAL cpuVendor
 GLOBAL sti
 GLOBAL setPicMaster
+GLOBAL setPicSlave
 GLOBAL irq0Handler
 GLOBAL irq1Handler
-GLOBAL getSystemHour
-GLOBAL irqKeyboardHandler
+GLOBAL irq12Handler
+
 EXTERN irqDispatcher
+
 %include "./asm/macros.m"
 
 section .text
 
-getSystemHour:
-	push rbp
-	mov rbp, rsp
-	mov al, 0
-	out 70h, al
-	in ax, 71h
-	mov rsp, rbp
-	pop rbp
-	ret
 
 
-irqKeyboardHandler:
-	irqKeyBoardHandler 0
+irq0Handler:
+	irqHandler 0
+
+irq1Handler:
+	irqHandler 1
+
+irq12Handler:
+	irqHandler 2
+		
 
 sti:
 	sti
@@ -32,13 +32,19 @@ setPicMaster:
 	push rbp
 	mov rbp, rsp
 	
-	mov rax, rdi    ;---> que tiene el registro rdi ?
+	mov rax, rdi
 	out 21h, al
- 	
+	
 	mov rsp, rbp
 	pop rbp
 	ret
-
+setPicSlave:
+	push rbp
+	mov rbp, rsp
+	mov rax,rdi
+	out 0A1h,al
+	pop rbp
+	ret
 	
 cpuVendor:
 	push rbp

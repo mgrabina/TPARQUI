@@ -1,5 +1,8 @@
-section .text
+
 GLOBAL getKey
+EXTERN print
+
+section .text
 
 getKey:
 	push rbp

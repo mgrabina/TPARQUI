@@ -11,8 +11,7 @@ void ncPrintHex(uint64_t value);
 void ncPrintBin(uint64_t value);
 void ncPrintBase(uint64_t value, uint32_t base);
 void ncClear();
-void ncPrintFormat(const char *,int,int);
-void ncPrintCharFormat(char, char);
-void ncPrintSystemHour();
+void ncPrintFormat(const char* string, int background, int font);
+void ncPrintCharFormat(char character, char format);
 
 #endif

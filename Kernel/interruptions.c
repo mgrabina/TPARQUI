@@ -16,12 +16,9 @@ typedef struct {
 
 #pragma pack(pop)
 
-static IDTEntry_t* IDT = (IDTEntry_t*) 0x0;  //---> que es esto ? hay que hacer 1 para cada interrupcion ?
+static IDTEntry_t* IDT = (IDTEntry_t*) 0x0;
 
-//----> Para setear interrupcion por interrupcion
-//		hay que llenar esta estructura de manera diferente para cada interrupcion
-//		o solo con cambiar el indice y el handler estaria bien ? 
-//		De ser asi, que normativa sigue, osea, porque lo llena asi ?
+
 void iSetHandler(int index, uint64_t handler) {
 	IDT[index].offset_l = (uint16_t) handler & 0xFFFF;
 	IDT[index].offset_m = (uint16_t) (handler >> 16) & 0xFFFF;
