@@ -21,13 +21,17 @@ mouseHandler(){
 
 	if(rightButton){
 		//Click derecho
+		ncPrint("[Click derecho]");
 	}
 	if(middleButton){
 		//Click central
+		ncPrint("[Click central]");
 	}
 	if(leftButton){
 		//Click izquierdo
+		ncPrint("[Click izquierdo]");
 	}
 	//Mostrar movimientos
+	ncPrint("Movimientos: ("+xmovement+","+ymovement+")");
 
 }
