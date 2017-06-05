@@ -43,6 +43,9 @@ void mouseHandler(){
 		ncPrint("[Click izquierdo]");
 	}
 	//Mostrar movimientos
-	ncPrint("Movimientos: ("+xmovement+","+ymovement+")");
-
+	ncPrint("Movimientos: (");
+	ncPrint(xmovement);
+	ncPrint(" , ");
+	ncPrint(ymovement);
+	ncPrint(")");
 }
