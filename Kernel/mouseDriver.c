@@ -17,6 +17,7 @@ void mouseHandler(){
 	//  Byte 3	Y movement (Entero)
 	//Int -> 4 Bytes
 	//Proceso la informacion
+	ncPrint("Entro al mouse handler de c");
 	int info = getMouseInfo();
 	int Byte1 = (info >> (8*0)) & 0xff;
 	int xmovement = (info >> (8*1)) & 0xff;

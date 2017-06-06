@@ -1,11 +1,12 @@
 section .text
 GLOBAL getMouseInfo
-
+extern print
 getMouseInfo:
 	push rbp
 	mov rbp, rsp
 	xor rax,rax
-	in al,60h 	
+	call print
+	in eax,60h 	
 	mov rsp, rbp
 	pop rbp
 	ret

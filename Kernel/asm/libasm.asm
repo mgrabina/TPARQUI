@@ -7,7 +7,7 @@ GLOBAL irq1Handler
 GLOBAL irq12Handler
 
 EXTERN irqDispatcher
-
+extern print
 %include "./asm/macros.m"
 
 section .text
@@ -21,7 +21,7 @@ irq1Handler:
 	irqHandler 1
 
 irq12Handler:
-	irqHandler 2
+	irqHandler 12
 		
 
 sti:

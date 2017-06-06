@@ -100,15 +100,20 @@ void setPicMaster(uint16_t);
 void setPicSlave(uint16_t);
 void keyboardHandler();
 void mouseHandler();
-
+void print(){
+	ncPrint("si");
+}
 
 typedef void (*handler_t)(void);
 
-handler_t handlers[] = {tickHandler,keyboardHandler, mouseHandler};
+handler_t handlers[] = {tickHandler,keyboardHandler,0,0,0,0,0,0,0,0,0,0, print};
  
 void irqDispatcher(int irq) {
+if(irq==2) ncPrint("[Dos]");
+if(irq==12) ncPrint("[Doce]");
 	handlers[irq]();
 }
+
 
 int main()
 {	
@@ -117,7 +122,7 @@ int main()
 	iSetHandler(0x2C, (uint64_t) irq12Handler);
 	
 	setPicMaster(0xFC);
-	setPicSlave(0xF7);
+	setPicSlave(0xFF);
 	
 	sti();
 	void printTerminalLine();
