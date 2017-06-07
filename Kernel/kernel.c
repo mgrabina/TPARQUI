@@ -100,6 +100,7 @@ void setPicMaster(uint16_t);
 void setPicSlave(uint16_t);
 void keyboardHandler();
 void mouseHandler();
+void startMouse();
 void print(){
 	ncPrint("si");
 }
@@ -121,8 +122,9 @@ int main()
 	iSetHandler(0x21, (uint64_t) irq1Handler);
 	iSetHandler(0x2C, (uint64_t) irq12Handler);
 	
+	startMouse();
 	setPicMaster(0xFC);
-	setPicSlave(0xFF);
+	setPicSlave(0x00);
 	
 	sti();
 	void printTerminalLine();
