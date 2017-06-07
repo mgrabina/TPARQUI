@@ -13,12 +13,12 @@ startMouse:	;en teoria bien
 	in al, 0x60	;Obtengo estado actual 
 	or al, 0x02 ;Lo modifico
 	and al,0xEF
-	mov rbx, 0x60
-	out 0x64, rbx ;Lo envio
+	mov bl, 0x60
+	out 0x64, 0x60 ;Lo envio
 	out 0x60, al
 
 	mov cl, 0xFF	;Resetea
-	out 0x64, cl
+	out 0x64, 0xFF
 	
 	mov rsp, rbp
 	pop rbp
