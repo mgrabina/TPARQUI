@@ -49,7 +49,7 @@ static unsigned char shiftedKeyboard[128] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
 };
 
-#define BUFFERSIZE 100
+#define BUFFERSIZE 500
 #define RSHIFT_RELEASE 0xB6
 #define RSHIFT  0x36
 
@@ -59,16 +59,16 @@ static int shifted;
 static int keyReleasedPressed;
 static int key;
 static int keyToPrint=0;
+static int toConsume=0;
 
 void keyboardHandler(){
 	key = getKey();
   keyToPrint = 0;
   keyReleasedPressed = key & 0x80;
-  if(keyboard[key] == '\n'){
+  if(keyboard[key] == '\n' && !keyReleasedPressed){
     analizeBuffer(buffer);
     current = 0;
-  }
-	if(key == RSHIFT){
+  }else if(key == RSHIFT){
 		shifted = 1;
 	}else if(key == RSHIFT_RELEASE){
 		shifted = 0;
@@ -90,4 +90,23 @@ void keyboardHandler(){
     	}
     }
   }  
+}
+
+char getNext(){
+  char consume = buffer[toConsume];
+  buffer[toConsume] = '\0';
+  toConsume++;
+  return consume;
+
+}
+
+void consumeAll(char * otherBuffer){
+    int i = 0;
+    while(buffer[toConsume] != '\0'){
+      otherBuffer[i++] = buffer[toConsume];
+      buffer[toConsume] = '\0';
+      toConsume++;
+    }
+    current = 0;
+    toConsume = 0;
 }

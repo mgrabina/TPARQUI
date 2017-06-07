@@ -111,7 +111,7 @@ typedef void (*handler_t)(void);
 handler_t handlers[] = {tickHandler,keyboardHandler, mouseHandler};
  
 void irqDispatcher(int irq) {
-ncPrintDec(irq);
+
 if(irq==12) ncPrint("[Doce]");
 	handlers[irq]();
 }
@@ -128,6 +128,6 @@ int main()
 	setPicSlave(0x00);
 	
 	sti();
-	void printTerminalLine();
+	ncPrint("Terminal: ");
 	while (1);
 }
