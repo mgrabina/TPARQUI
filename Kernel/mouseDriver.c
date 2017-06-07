@@ -6,22 +6,23 @@
 #include <interruptions.h>
 
 int getMouseInfo();
-void outc(char, char);
-char inc(char);
+void outc(unsigned char, unsigned char);
+unsigned char inc(unsigned char);
 
 void mouseHandler();
 void startMouse();
 
 void startMouse(){
-	ncPrint("[Inicializando mouse..] \n");
+	ncPrint("[Inicializando mouse..]");
+	ncNewline();
 	outc(0x64, 0x20);
-	char c = inc(0x60);
+	unsigned char c = inc(0x60);
 	c = c | 0x02;
 	c = c & 0xEF;
 	outc(0x60, c);
 	outc(0x64, 0x60);
 	outc(0x64, 0xFF);
-	ncPrint("[Mouse inicializado.] \n");
+	ncPrint("[Mouse inicializado.]");
 }
 
 void mouseHandler(){

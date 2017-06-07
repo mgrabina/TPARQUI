@@ -21,7 +21,7 @@ irq1Handler:
 	irqHandler 1
 
 irq12Handler:
-	irqHandler 12
+	irqHandler 2
 		
 
 sti:
@@ -41,8 +41,10 @@ setPicMaster:
 setPicSlave:
 	push rbp
 	mov rbp, rsp
+
 	mov rax,rdi
 	out 0A1h,al
+
 	pop rbp
 	ret
 	

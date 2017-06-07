@@ -108,10 +108,10 @@ void print(){
 
 typedef void (*handler_t)(void);
 
-handler_t handlers[] = {tickHandler,keyboardHandler,0,0,0,0,0,0,0,0,0,0, print};
+handler_t handlers[] = {tickHandler,keyboardHandler, mouseHandler};
  
 void irqDispatcher(int irq) {
-if(irq==2) ncPrint("[Dos]");
+ncPrintDec(irq);
 if(irq==12) ncPrint("[Doce]");
 	handlers[irq]();
 }
@@ -124,7 +124,7 @@ int main()
 	iSetHandler(0x2C, (uint64_t) irq12Handler);
 	
 	startMouse();
-	setPicMaster(0xFC);
+	setPicMaster(0x00);
 	setPicSlave(0x00);
 	
 	sti();
