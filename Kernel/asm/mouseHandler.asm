@@ -1,5 +1,7 @@
 section .text
 GLOBAL getMouseInfo
+GLOBAL outc
+GLOBAL inc
 extern print
 
 outc:
@@ -7,18 +9,21 @@ outc:
 	mov rbp, rsp
 	xor rax,rax
 
-	out sil, dil
+	mov rdx, rdi
+	mov rax, rsi
+	out dx, al
 
 	mov rsp, rbp
 	pop rbp
 	ret
 
-intc:
+inc:
 	push rbp
 	mov rbp, rsp
 	xor rax,rax
 
-	in al, dil
+	mov rdx, rdi
+	in al, dx
 
 	mov rsp, rbp
 	pop rbp

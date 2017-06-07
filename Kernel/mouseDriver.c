@@ -15,12 +15,12 @@ void startMouse();
 void startMouse(){
 	ncPrint("[Inicializando mouse..] \n");
 	outc(0x64, 0x20);
-	char char = inc(0x60);
-	char = char | 0x02;
-	char = char & 0xEF;
-	outc(0x60, char);
+	char c = inc(0x60);
+	c = c | 0x02;
+	c = c & 0xEF;
+	outc(0x60, c);
 	outc(0x64, 0x60);
-	//outc(0x64, 0xFF);
+	outc(0x64, 0xFF);
 	ncPrint("[Mouse inicializado.] \n");
 }
 
