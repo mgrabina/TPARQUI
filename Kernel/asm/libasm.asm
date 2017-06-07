@@ -1,5 +1,6 @@
 GLOBAL cpuVendor
 GLOBAL sti
+GLOBAL cli
 GLOBAL setPicMaster
 GLOBAL setPicSlave
 GLOBAL irq0Handler
@@ -26,6 +27,9 @@ irq12Handler:
 
 sti:
 	sti
+	ret
+cli:
+	cli
 	ret
 	
 setPicMaster:

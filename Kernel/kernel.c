@@ -94,6 +94,7 @@ void keyboard(){
 }
 
 void sti();
+void cli();
 void irq0Handler();
 void irq1Handler();
 void irq12Handler();
@@ -119,13 +120,14 @@ if(irq==12) ncPrint("[Doce]");
 
 int main()
 {	
+	cli();
 	iSetHandler(0x20, (uint64_t) irq0Handler);
 	iSetHandler(0x21, (uint64_t) irq1Handler);
 	iSetHandler(0x2C, (uint64_t) irq12Handler);
 	
 	startMouse();
-	setPicMaster(0x00);
-	setPicSlave(0x00);
+	setPicMaster(0xF8);
+	setPicSlave(0xEF);
 	
 	sti();
 	ncPrint("Terminal: ");

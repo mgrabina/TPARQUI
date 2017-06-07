@@ -12,15 +12,22 @@ unsigned char inc(unsigned char);
 void mouseHandler();
 void startMouse();
 
+void wait(){
+
+}
 void startMouse(){
 	ncPrint("[Inicializando mouse..]");
 	ncNewline();
+	while(inc(0x64)==0x01);
 	outc(0x64, 0x20);
 	unsigned char c = inc(0x60);
 	c = c | 0x02;
 	c = c & 0xEF;
+	while(inc(0x64)==0x01);	
 	outc(0x60, c);
+	while(inc(0x64)==0x01);
 	outc(0x64, 0x60);
+	while(inc(0x64)==0x01);
 	outc(0x64, 0xFF);
 	ncPrint("[Mouse inicializado.]");
 }
