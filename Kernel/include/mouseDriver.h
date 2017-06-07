@@ -1,1 +1,2 @@
 void mouseHandler();
+void startMouse();

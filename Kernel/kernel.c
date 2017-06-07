@@ -4,6 +4,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <interruptions.h>
+#include <mouseDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;

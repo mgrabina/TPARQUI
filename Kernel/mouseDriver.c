@@ -6,8 +6,23 @@
 #include <interruptions.h>
 
 int getMouseInfo();
+void outc(BYTE, BYTE);
+BYTE inc(BYTE);
 
 void mouseHandler();
+void startMouse();
+
+void startMouse(){
+	ncPrint("[Inicializando mouse..] \n");
+	outc(0x64, 0x20);
+	BYTE byte = inc(0x60);
+	byte = byte || 0x02;
+	byte = byte && 0xEF;
+	outc(0x60, byte);
+	outc(0x64, 0x60);
+	//outc(0x64, 0xFF);
+	ncPrint("[Mouse inicializado.] \n");
+}
 
 void mouseHandler(){
 	//Info: http://www.computer-engineering.org/ps2mouse/
