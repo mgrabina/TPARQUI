@@ -43,8 +43,8 @@
 	call irqDispatcher
 	
 	mov al, 20h ; EOI
-	out A0h, al ; Le dice al pic slave que esta dispuesto a recibir
-	out 20h, al ; Le dice al pic master que esta dispuesto a recibir
+	out 0xA0, al ; Le dice al pic slave que esta dispuesto a recibir
+	out 0x20, al ; Le dice al pic master que esta dispuesto a recibir
 	
 	popaq
 
