@@ -7,3 +7,4 @@
 
 void keyboardHandler();
 int getNextKey();
+void consumeAll(char * otherBuffer);
