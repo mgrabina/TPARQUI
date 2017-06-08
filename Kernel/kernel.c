@@ -130,6 +130,10 @@ int main()
 	setPicSlave(0xEF);
 	
 	sti();
+	ncClear();
+	ncPrint("[Todos los componentes inicializados.]");ncNewline();
+	ncPrintFormat("Bienvenido! La hora es: ", 20, 30);
+	getTime(); ncNewline();
 	ncPrint("Terminal: ");
 	while (1);
 }

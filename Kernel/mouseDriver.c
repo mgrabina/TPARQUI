@@ -14,7 +14,6 @@ void startMouse();
 
 
 void startMouse(){
-	ncPrint("[Inicializando mouse..]");
 	ncNewline();
 	waitW();
 	outc(0x64, 0xA8);
@@ -28,10 +27,9 @@ void startMouse(){
 	waitW();
 	outc(0x60, c);
 	waitW();
-	outc(0x60, 0xF6);
+	//outc(0x60, 0xF6);
 	waitW();
 	outc(0x60, 0xF4);
-	ncPrint("[Mouse inicializado.]");
 }
 
 void waitW(){
@@ -49,12 +47,12 @@ void waitR(){
 	}
 }
 
-int GMI(){
+unsigned char GMI(){
 	waitR();
 	inc(0x60);
 }
 
-static int ciclo = 0;
+
 void mouseHandler(){
 	//Info: http://www.computer-engineering.org/ps2mouse/
 	//				Bit 7	Bit 6		Bit 5		Bit 4		Bit 3		Bit 2		Bit 1		Bit 0
@@ -63,15 +61,20 @@ void mouseHandler(){
 	//  char 3	Y movement (Entero)
 	//Int -> 4 chars
 	//Proceso la informacion
-	char info[3];
-	info[ciclo++] = GMI(); 	
-	if(ciclo == 3){
-		ciclo=0;
+static unsigned char ciclo = 0;
+static char info[4];
+	
+	info[ciclo++] = inc(0x60); 	
 		
-		//MANEJAR CAMBIOS DE UBICACION
-		ncPrintDec(info[1]);
-		ncPrintDec(info[2]);		
+		
+	if(ciclo == 4){
+		ncPrint("[ ");ncPrintBin(info[0]);ncPrint(" , ");
+ncPrintBin(info[1]);ncPrint(" , ");
+ncPrintBin(info[2]);ncPrint(" ]");
 
+		//MANEJAR CAMBIOS DE UBICACION
+		
+		// showMouse(info[1], info[2]); //Funcion para mostrar mouse en la pantalla (x,y)
 		if(info[0] & 0x2){
 			//Click derecho
 			ncPrint("[Click derecho]");
@@ -84,5 +87,9 @@ void mouseHandler(){
 			//Click izquierdo
 			ncPrint("[Click izquierdo]");
 		}
-	}	
+		ciclo=0;
+		info[0] = 0;
+		info[1] = 0;
+		info[2] = 0;
+	}
 }
