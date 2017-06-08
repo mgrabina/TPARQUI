@@ -25,12 +25,10 @@ int comparator(char * localBuffer){
 
 	if(! strcmp(localBuffer,s1)){
 		return 0;
-		ncPrint("Entre al man");
 	}
 
 	if(strncmp(localBuffer,s2,4)){
 		return 1;
-		ncPrint("Entre al echo");
 	}
 	
 	return 2;
@@ -49,14 +47,14 @@ void man(){
 
 void echo(char * localBuffer){
 	ncNewline();
-	ncPrint("echo: ");
-	ncPrint(localBuffer);
+	ncPrint(localBuffer+5);
 	ncNewline();
 }
 
 void printTerminalLine(char * localBuffer){
 	ncNewline();
 	ncPrint(localBuffer);
+	ncPrint(" : Command not found");
 	ncNewline();
 
 
