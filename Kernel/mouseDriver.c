@@ -27,7 +27,11 @@ void startMouse(){
 	waitW();
 	outc(0x60, c);
 	waitW();
-	//outc(0x60, 0xF6);
+	//Seteo valores default
+	waitW();
+	outc(0x64, 0xD4);
+	waitW();
+	outc(0x60, 0xF6);
 	waitW();
 	outc(0x60, 0xF4);
 }
