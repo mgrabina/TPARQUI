@@ -15,36 +15,45 @@ void startMouse();
 
 void startMouse(){
 	ncNewline();
-	waitW();
-	outc(0x64, 0xA8);
-	waitW();
-	outc(0x64, 0x20);
 	waitR();
+	outc(0x64, 0xA8);
+	waitR();
+	outc(0x64, 0x20);
+	waitW();
 	unsigned char c = inc(0x60);
+	c	= (c & 0xEF);
 	c = c | 2;
-	waitW();
+	waitR();
 	outc(0x64, 0x60);	
-	waitW();
+	waitR();
 	outc(0x60, c);
-	waitW();
 	//Seteo valores default
-	waitW();
+	waitR();
 	outc(0x64, 0xD4);
-	waitW();
+	waitR();
 	outc(0x60, 0xF6);
+	
 	waitW();
+	inc(0x60);
+
+	waitR();
+	outc(0x64, 0xD4);
+	waitR();
 	outc(0x60, 0xF4);
+	
+	
+	
 }
 
 void waitW(){
-	int c = 100000;
+	unsigned int c = 100000;
 	while(c!=0){
 		if((inc(0x64)&1) == 1)return;		
 		c=c-1;
 	}
 }
 void waitR(){
-	int c = 100000;
+	unsigned int c = 100000;
 	while(c!=0){
 		if((inc(0x64)&2) == 0)return;		
 		c=c-1;
@@ -52,7 +61,7 @@ void waitR(){
 }
 
 unsigned char GMI(){
-	waitR();
+	waitW();
 	inc(0x60);
 }
 
@@ -65,20 +74,17 @@ void mouseHandler(){
 	//  char 3	Y movement (Entero)
 	//Int -> 4 chars
 	//Proceso la informacion
-static unsigned char ciclo = 0;
-static char info[4];
-	
-	info[ciclo++] = inc(0x60); 	
-		
-		
-	if(ciclo == 4){
-		ncPrint("[ ");ncPrintBin(info[0]);ncPrint(" , ");
-ncPrintBin(info[1]);ncPrint(" , ");
-ncPrintBin(info[2]);ncPrint(" ]");
+static unsigned char ciclo = -1;
+static unsigned char info[3];
 
-		//MANEJAR CAMBIOS DE UBICACION
+	info[ciclo] = GMI(); 	
+	ciclo++;	
 		
-		// showMouse(info[1], info[2]); //Funcion para mostrar mouse en la pantalla (x,y)
+	if(ciclo == 3){
+		ncPrint("[ ");ncPrintDec(info[1]);ncPrint(" , ");
+ncPrintDec(info[2]);ncPrint(" ]");
+		
+		//PODES HACER FUNCIONES DENTRO DE LOS CLICKS QUE NECESITAMOS.		
 		if(info[0] & 0x2){
 			//Click derecho
 			ncPrint("[Click derecho]");
@@ -91,6 +97,21 @@ ncPrintBin(info[2]);ncPrint(" ]");
 			//Click izquierdo
 			ncPrint("[Click izquierdo]");
 		}
+		char movy,movx;
+		if(!(info[0] & 0x20)) //Hay que ver si el mov es positivo o neg.
+			movy = -info[2]; 
+		else 
+			movy = info[2];
+		if(!(info[0] & 0x10)) 
+			movx = -info[1]; 
+		else 
+			movx = info[1];
+		
+		//PARA ARI
+		//Hacer lo del puntero, aca comentada la info, te paso los mov.
+		//Funciondeari(movx, movy);		
+
+
 		ciclo=0;
 		info[0] = 0;
 		info[1] = 0;
