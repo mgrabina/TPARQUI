@@ -1,4 +1,4 @@
-#include <naiveConsole.h>
+#include <videoDriver.h>
 #define ZONA_HORARIA 3
 int getSeconds();
 int getMinutes();
@@ -23,7 +23,7 @@ void getTime(){
 	ncNewline();
 } 
 
-void getDate(){
+void getRtcDate(){
 	initRtc();
 	getDayMonth();
 	ncPrintDec(translate(0x71));

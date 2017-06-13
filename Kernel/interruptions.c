@@ -1,5 +1,7 @@
 //interruptions.c
 #include <interruptions.h>
+#include <mouseDriver.h>
+#include <keyboardDriver.h>
 
 #pragma pack(push)
 #pragma pack(1)
@@ -30,4 +32,45 @@ void iSetHandler(int index, uint64_t handler) {
 	IDT[index].attrs = 0x8E;
 	IDT[index].zero_h = 0;	
 	
+}
+
+void sti();
+void cli();
+void irq0Handler();
+void irq1Handler();
+void irq12Handler();
+void setPicMaster(uint16_t);
+void setPicSlave(uint16_t);
+void keyboardHandler();
+void mouseHandler();
+void startMouse();
+void tickHandler();
+
+
+
+typedef void (*handler_t)(void);
+
+handler_t handlers[] = {tickHandler,keyboardHandler, mouseHandler};
+
+void irqDispatcher(int irq) {
+
+if(irq==12) ncPrint("[Doce]");
+	handlers[irq]();
+}
+
+
+
+void setInterruptions(){
+
+	cli();
+	iSetHandler(0x20, (uint64_t) irq0Handler);
+	iSetHandler(0x21, (uint64_t) irq1Handler);
+	iSetHandler(0x2C, (uint64_t) irq12Handler);
+	
+	startMouse();
+	setPicMaster(0xF8);
+	setPicSlave(0xEF);
+	
+	sti();
+
 }

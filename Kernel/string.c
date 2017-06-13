@@ -1,4 +1,4 @@
-#include <naiveConsole.h>
+#include <videoDriver.h>
 
 int strcmp(const char * s1,const char *s2){
 	while(*s1 && *s2 && *s1 == *s2){
@@ -18,4 +18,25 @@ int strncmp(const char * s1,const char *s2, int n){
 	if(i == n)
 		return rta;
 	return 0;
+}
+
+int strlengh(const char * s1){
+	int i = 0;
+	while(s1[i] != '\0')
+		i++;
+	return i;
+}
+
+void strcat(char * s1, const char * s2){
+	int i = 0;
+	int j = 0;
+	while(s1[i] != '\0'){
+		i++;
+	}
+	while(s2[j] != '\0'){
+		s1[i] = s2[j];
+		i++;
+		j++;
+	}
+	s1[i] = '\0';
 }

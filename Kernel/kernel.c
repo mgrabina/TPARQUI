@@ -2,9 +2,9 @@
 #include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
-#include <naiveConsole.h>
+#include <videoDriver.h>
 #include <interruptions.h>
-#include <mouseDriver.h>
+#include <mouseDriver.h>()
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -80,60 +80,19 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 	return getStackBase();
+
 }
 
-static int i = 0;
-char *video = (char *) 0xB8000;
-
-void tickHandler() {
-}
-
-void keyboard(){
-	ncPrint("Interrupcion de keyboard");
-	ncNewline();
-}
-
-void sti();
-void cli();
-void irq0Handler();
-void irq1Handler();
-void irq12Handler();
-void setPicMaster(uint16_t);
-void setPicSlave(uint16_t);
-void keyboardHandler();
-void mouseHandler();
-void startMouse();
-void print(){
-	ncPrint("si");
-}
-
-typedef void (*handler_t)(void);
-
-handler_t handlers[] = {tickHandler,keyboardHandler, mouseHandler};
- 
-void irqDispatcher(int irq) {
-
-if(irq==12) ncPrint("[Doce]");
-	handlers[irq]();
-}
-
+void systemHandler(int a,char *c,int b,int d);
 
 int main()
 {	
-	cli();
-	iSetHandler(0x20, (uint64_t) irq0Handler);
-	iSetHandler(0x21, (uint64_t) irq1Handler);
-	iSetHandler(0x2C, (uint64_t) irq12Handler);
-	
-	startMouse();
-	setPicMaster(0xF8);
-	setPicSlave(0xEF);
-	
-	sti();
 	ncClear();
-	ncPrint("[Todos los componentes inicializados.]");ncNewline();
-	ncPrintFormat("Bienvenido! La hora es: ", 20, 30);
-	getTime(); ncNewline();
-	ncPrint("Terminal: ");
+	setInterruptions();
+	char s1[11] = "hola";
+	char s2[6] ="mundo";
+	strcat(s1,s2);
+	ncPrint(s1);
+	initTerminalLine();
 	while (1);
 }

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
-#include <naiveConsole.h>
+#include <videoDriver.h>
 #include <interruptions.h>
 
 void keyboardHandler();
