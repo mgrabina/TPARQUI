@@ -13,5 +13,9 @@ void ncPrintBase(uint64_t value, uint32_t base);
 void ncClear();
 void ncPrintFormat(const char* string, int background, int font);
 void ncPrintCharFormat(char character, char format);
+void ncPrintMousePointer(char movx, char movy);
+void nncPrintExactPosition(int fila, int columna);
+void ncCopyTerminal(char * Terminal);
+void ncScroll();
 
 #endif
