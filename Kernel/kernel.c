@@ -89,14 +89,7 @@ int main()
 {	
 	ncClear();
 	setInterruptions();
-	//Titulos
-	ncNewline();
-	ncPrintFormat("Bienvenidos a la terminal", 10,16);
-	ncNewline();
-	char s1[11] = "hola";
-	char s2[6] ="mundo";
-	strcat(s1,s2);
-	ncPrint(s1);
 	initTerminalLine();
+	ncNewline();
 	while (1);
 }

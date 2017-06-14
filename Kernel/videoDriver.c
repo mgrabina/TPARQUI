@@ -1,4 +1,5 @@
 #include <videoDriver.h>
+#include <lib.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
@@ -25,7 +26,6 @@ void ncPrintFormat(const char* string, int background, int font){
 }
 void ncPrintCharFormat(char character, char format){
 	if(currentVideo == video + size){
-		ncPrintExactPosition(0,0,'A');
 		ncScroll();
 	}
 	*currentVideo = character;
@@ -34,14 +34,16 @@ void ncPrintCharFormat(char character, char format){
 	currentVideo++;
 }
 
-void ncCopyTerminal(char * Terminal){
-	
-	int fromFirstRow = width + 1;
+void ncCopyTerminal(){
 	int i;
-	for(i = 0; i < size - fromFirstRow; i++){
-		Terminal[i] = *(video + fromFirstRow);
-		fromFirstRow++;
+	int fromFirstRow = width * 2;
+	for( i = 0; i < size + 2 - (width - 1) * 2; i++){
+		memcpy(video+i, video+fromFirstRow+i, 1);
+		//*(video+i) = *(video+fromFirstRow+i);
 	}
+	for(i = 0; i < width * 2;i++)
+		*(video + (24 * 80 * 2) + i ) = '\0';
+	currentVideo = video + (24 * 80 * 2);
 }
 
 void ncPrintExactPosition(int fila, int columna, char character){
@@ -50,10 +52,7 @@ void ncPrintExactPosition(int fila, int columna, char character){
 }
 
 void ncScroll(){
-	char Terminal[size];
-	ncClear();
-	ncCopyTerminal(Terminal);
-	ncPrint(Terminal);
+	ncCopyTerminal();
 }
 
 void ncPrintMousePointer(char movx, char movy){
