@@ -87,7 +87,7 @@ void systemHandler(int a,char *c,int b,int d);
 
 int main()
 {	
-	ncClear();
+	ncClear();	
 	setInterruptions();
 	initTerminalLine();
 	ncNewline();

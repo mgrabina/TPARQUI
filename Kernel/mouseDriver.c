@@ -75,42 +75,28 @@ void mouseHandler(){
 	//Int -> 4 chars
 	//Proceso la informacion
 static unsigned char ciclo = -1;
-static unsigned char info[3];
+static  char info[3];
 
 	info[ciclo] = GMI(); 	
 	ciclo++;	
-		
-	if(ciclo == 3){
-		ncPrint("[ ");ncPrintDec(info[1]);ncPrint(" , ");
-ncPrintDec(info[2]);ncPrint(" ]");
-		
+	int mouseClick=-1;	
+	if(ciclo == 3){	
+
 		//PODES HACER FUNCIONES DENTRO DE LOS CLICKS QUE NECESITAMOS.		
 		if(info[0] & 0x2){
 			//Click derecho
-			ncPrint("[Click derecho]");
+			mouseClick = 2;
 		}
 		if(info[0] & 0x4){
 			//Click central
-			ncPrint("[Click central]");
+			mouseClick = 1;
 		}
 		if(info[0] & 0x1){
 			//Click izquierdo
-			ncPrint("[Click izquierdo]");
+			mouseClick = 0;
 		}
-		char movy,movx;
-		if(!(info[0] & 0x20)) //Hay que ver si el mov es positivo o neg.
-			movy = -info[2]; 
-		else 
-			movy = info[2];
-		if(!(info[0] & 0x10)) 
-			movx = -info[1]; 
-		else 
-			movx = info[1];
-		
-		//PARA ARI
-		//Hacer lo del puntero, aca comentada la info, te paso los mov.
-		//Funciondeari(movx, movy);		
 
+		ncPrintMousePointer(info[1]/100, info[2]/100, mouseClick);		
 
 		ciclo=0;
 		info[0] = 0;

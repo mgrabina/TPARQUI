@@ -5,11 +5,16 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
-static uint8_t * currentVideo = (uint8_t*)0xB8000;
+static uint8_t * currentVideo = (uint8_t*)0xB8000 + 160;
 static const uint32_t width = 80;
+static const char widthChar = 80;
 static const uint32_t height = 25;
+static const char heightChar = 25;
 static const uint32_t size = ((25 - 1) * 80 * 2 + (80 - 1) * 2);
-
+static const unsigned char soft = 15;
+static unsigned char mouseCurrentX = 0;
+static unsigned char mouseCurrentY = 0;
+static char previous = 0;
 void ncPrint(const char * string)
 {
 	int i;
@@ -54,8 +59,34 @@ void ncPrintExactPosition(int fila, int columna, char character){
 void ncScroll(){
 	ncCopyTerminal();
 }
-
-void ncPrintMousePointer(char movx, char movy){
+char ncRecoverPosition(int fil, int col){
+	char ret;
+	ret = *(video+fil*80+col);
+	return ret;	
+}
+void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){	
+	char * mousePos ;
+	uint8_t auxX=0;
+	uint8_t auxY=0;	
+	auxX = mouseCurrentX + movx;
+	auxY = mouseCurrentY - movy;
+	
+	if(auxX >= 0 && auxX < width && auxY >=0 && auxY < height){
+		int i;
+		for(i=0;i<height * width * 2 ;i++){
+			i++;
+			video[i] = 7;
+		}
+		//Mouse 0Izq 1Cent 2Der
+		if(mouseClick == 0) //Izquierdo
+		{
+			
+		}
+		mouseCurrentX = auxX;
+		mouseCurrentY = auxY;
+		mousePos = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
+		*mousePos = 40;	
+	}
 
 }
 
@@ -104,7 +135,7 @@ void ncClear()
 	int i;
 
 	for (i = 0; i < height * width; i++)
-		video[i * 2] = ' ';
+		video[i * 2] = 0;
 	currentVideo = video;
 }
 
