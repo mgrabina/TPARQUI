@@ -17,12 +17,14 @@ static unsigned char mouseCurrentY = 0;
 static char previous = 0;
 static unsigned char selectionFrom = 0;
 static unsigned char selectionTo = 0;
+static char color = 0;
+static char fontColor = 7;
 void ncPrint(const char * string)
 {
 	int i;
 
 	for (i = 0; string[i] != 0; i++)
-		ncPrintChar(string[i]);
+		ncPrintCharFormat(string[i], 7);
 }
 
 
@@ -33,7 +35,9 @@ void back(){
 	*(currentVideo+1)= 0;
 }
 
-
+void printLetter(char c){
+	ncPrintCharFormat(c, 6);
+}
 void ncPrintFormat(const char* string, int background, int font){
 	int i;
 	char format = 16*background+font;
@@ -48,6 +52,7 @@ void ncPrintCharFormat(char character, char format){
 	currentVideo++;
 	*currentVideo = format;
 	currentVideo++;
+	setBack();
 }
 
 void ncCopyTerminal(){
@@ -58,7 +63,7 @@ void ncCopyTerminal(){
 		//*(video+i) = *(video+fromFirstRow+i);
 	}
 	for(i = 0; i < width * 2;i++)
-		*(video + (24 * 80 * 2) + i ) = '\0';
+		*(video + (24 * 80 * 2) + i) = '\0';
 	currentVideo = video + (24 * 80 * 2);
 }
 
@@ -75,23 +80,31 @@ char ncRecoverPosition(int fil, int col){
 	ret = *(video+fil*80+col);
 	return ret;	
 }
+void setBack(){
+	int i;
+	
+		for(i=0;i<height * width * 2 ;i++){
+			i++;
+			video[i] = 16*color+fontColor;
+		}
+
+
+}
 void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){	
 	char * mousePos ;
 	uint8_t auxX=0;
-	uint8_t auxY=0;	
-	auxX = mouseCurrentX + movx;
-	auxY = mouseCurrentY - movy;
+	uint8_t auxY=0;
 	static int seleccionando = 0;
 	static char * fromSeleccion = 0;
 	static char * buffer;
 	static int bufferPointer = 0;
 	static int bufferSize = 0;
+	if(mouseClick == 0){ movx /= 3; movy /= 3;}	
+	auxX = mouseCurrentX + movx;
+	auxY = mouseCurrentY - movy;
+	
 	if(auxX >= 0 && auxX < width && auxY >=0 && auxY < height){
 		int i;
-		for(i=0;i<height * width * 2 ;i++){
-			i++;
-			video[i] = 7;
-		}
 		switch(mouseClick){
 			case 0:	//Izq
 				if(seleccionando == 0 && fromSeleccion != ((char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1)){
@@ -108,9 +121,10 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 					ncPrintChar(buffer[bufferPointer++]);
 				}
 				bufferSize = 0;
-				bufferPointer = buffer;
+				bufferPointer = 0;
 				break;
 		}
+		setBack();
 		mouseCurrentX = auxX;
 		mouseCurrentY = auxY;
 		mousePos = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
@@ -122,24 +136,36 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 		buffer[bufferSize] = *(fromSeleccion -1);
 		bufferSize++;
 	}
-
+	
 }
 
 void ncPrintChar(char character)
 {
-	if(currentVideo == video + size)
-		ncScroll();
-	*currentVideo = character;
-	currentVideo += 2;
+	ncPrintCharFormat(character, color);
 }
-
+void setCursorColorVideo(char * buffer){
+	buffer += 13;
+	if(((*buffer)%10) != fontColor)
+	color = (*buffer)%10;
+	else ncPrint("Mismo color que fondo, no valido.");
+}
+void setFontColorVideo(char * buffer){
+	buffer += 13;
+	if(((*buffer)%10) != color)
+	fontColor = (*buffer)%10;
+	else ncPrint("Mismo color que fuente, no valido.");
+}
 void ncNewline()
 {
 	do
 	{
-		ncPrintChar(' ');
+		ncPrintCharFormat(' ', 0);
+		if(currentVideo == video + size){
+		ncScroll();
+	}
 	}
 	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
+	setBack();
 }
 
 
@@ -172,6 +198,7 @@ void ncClear()
 	for (i = 0; i < height * width; i++)
 		video[i * 2] = 0;
 	currentVideo = video;
+	setBack();
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)

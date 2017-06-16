@@ -32,6 +32,8 @@ int comparator(char * localBuffer){
 	
 	char * s1 ="man";
 	char * s2 ="echo ";
+	char * s3 ="setBackColor ";
+	char * s4 ="setFontColor ";
 	
 
 	if(! strcmp(localBuffer,s1)){
@@ -41,8 +43,13 @@ int comparator(char * localBuffer){
 	if(strncmp(localBuffer,s2,5)){
 		return 1;
 	}
-
-	return 2;
+	if(strncmp(localBuffer,s3,13)){
+		return 2;
+	}
+	if(strncmp(localBuffer,s4,13)){
+		return 3;
+	}
+	return 4;
 	
 }
 
@@ -51,6 +58,10 @@ void man(){
 	ncPrint("Las funcionalidades disponibles son:");
 	ncNewline();
 	ncPrint("echo - devuelve el string escrito en consola");
+	ncNewline();
+	ncPrint("setBackColor - cambia el color del fondo");
+	ncNewline();
+	ncPrint("setFontColor - cambia el color de la fuente");
 	ncNewline();
 	ncPrint("Pronto habran mas funciones");
 	ncNewline();
@@ -61,14 +72,19 @@ void echo(char * localBuffer){
 	ncPrint(localBuffer+5);
 	ncNewline();
 }
-
+void setCursorColor(char * c){
+	setCursorColorVideo(c);
+	ncNewline();
+}
+void setFontColor(char * c){
+	setFontColorVideo(c);
+	ncNewline();
+}
 void printTerminalLine(char * localBuffer){
 	ncNewline();
 	ncPrint(localBuffer);
 	ncPrint(" : Command not found");
 	ncNewline();
-
-
 }
 
 
@@ -81,6 +97,10 @@ void analizeBuffer(char * buffer){
 				break;
 		case 1: echo(localBuffer);
 				break;
+		case 2: setCursorColor(localBuffer);
+				break;
+		case 3: setFontColor(localBuffer);
+				break;		
 		default: printTerminalLine(localBuffer); 
 				 break;
 	}

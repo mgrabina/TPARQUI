@@ -92,7 +92,7 @@ void keyboardHandler(){
     			current = 0;
     		}
             buffer[current] = keyToPrint;
-            ncPrintCharFormat(buffer[current], 48);
+            printLetter(buffer[current]);
             current++; 
     	}else{
     		//Keyboard value 0 if it isn't printable	

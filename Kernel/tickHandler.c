@@ -8,6 +8,7 @@ void tickHandler(){
 	printHello();
 	getTime();
 	getRtcDate();
+
 }
 
 void printHello(){

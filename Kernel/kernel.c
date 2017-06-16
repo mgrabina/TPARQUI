@@ -89,7 +89,8 @@ int main()
 {	
 	ncClear();	
 	setInterruptions();
-	initTerminalLine();
-	ncNewline();
+	ncNewline();ncNewline();
+	initTerminalLine();	
+
 	while (1);
 }
