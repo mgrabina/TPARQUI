@@ -72,7 +72,11 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 	uint8_t auxY=0;	
 	auxX = mouseCurrentX + movx;
 	auxY = mouseCurrentY - movy;
-	
+	static int seleccionando = 0;
+	static char * fromSeleccion = 0;
+	static char * buffer;
+	static int bufferPointer = 0;
+	static int bufferSize = 0;
 	if(auxX >= 0 && auxX < width && auxY >=0 && auxY < height){
 		int i;
 		for(i=0;i<height * width * 2 ;i++){
@@ -81,18 +85,33 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 		}
 		switch(mouseClick){
 			case 0:	//Izq
+				if(seleccionando == 0 && fromSeleccion != ((char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1)){
+					fromSeleccion = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
+					seleccionando = 1;
+				}
 				break;
 			case 1:	//Cent
 				break;
 			case 2:	//Der
 				//Paste data
-							ncPrint("der");
+				for (int i = 0; i < bufferSize; ++i)
+				{
+					ncPrintChar(buffer[bufferPointer++]);
+				}
+				bufferSize = 0;
+				bufferPointer = buffer;
 				break;
 		}
 		mouseCurrentX = auxX;
 		mouseCurrentY = auxY;
 		mousePos = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
 		*mousePos = 40;	
+	}
+	if(seleccionando == 1){
+		*fromSeleccion = 20;
+		seleccionando = 0;
+		buffer[bufferSize] = *(fromSeleccion -1);
+		bufferSize++;
 	}
 
 }
