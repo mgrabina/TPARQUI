@@ -15,6 +15,8 @@ static const unsigned char soft = 15;
 static unsigned char mouseCurrentX = 0;
 static unsigned char mouseCurrentY = 0;
 static char previous = 0;
+static unsigned char selectionFrom = 0;
+static unsigned char selectionTo = 0;
 void ncPrint(const char * string)
 {
 	int i;
@@ -77,10 +79,15 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 			i++;
 			video[i] = 7;
 		}
-		//Mouse 0Izq 1Cent 2Der
-		if(mouseClick == 0) //Izquierdo
-		{
-			
+		switch(mouseClick){
+			case 0:	//Izq
+				break;
+			case 1:	//Cent
+				break;
+			case 2:	//Der
+				//Paste data
+							ncPrint("der");
+				break;
 		}
 		mouseCurrentX = auxX;
 		mouseCurrentY = auxY;
