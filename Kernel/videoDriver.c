@@ -1,5 +1,6 @@
 #include <videoDriver.h>
 #include <lib.h>
+#include <tickHandler.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
@@ -74,6 +75,7 @@ void ncPrintExactPosition(int fila, int columna, char character){
 
 void ncScroll(){
 	ncCopyTerminal();
+	scroll();
 }
 char ncRecoverPosition(int fil, int col){
 	char ret;
