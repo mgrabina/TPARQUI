@@ -25,7 +25,7 @@ static unsigned char keyboard[128] =
     0,	
   '-',
     0,	
-    0,
+    0,  
     0,	
   '+',
     0,	
@@ -62,14 +62,22 @@ static int keyToPrint=0;
 static int toConsume=0;
 
 
+
 void keyboardHandler(){
 	key = getKey();
   keyToPrint = 0;
   keyReleasedPressed = key & 0x80;
   if(keyboard[key] == '\n' && !keyReleasedPressed){
     analizeBuffer(buffer);
-    current = 0;
-  }else if(key == RSHIFT){
+    current = 0; 
+  }else if(keyboard[key] == '\b' && !keyReleasedPressed){
+    if(current !=0){  
+      back();
+      current--;
+      buffer[current] = 0;
+    }  
+  }
+  else if(key == RSHIFT){
 		shifted = 1;
 	}else if(key == RSHIFT_RELEASE){
 		shifted = 0;
@@ -83,8 +91,9 @@ void keyboardHandler(){
     		if(current == BUFFERSIZE-1){
     			current = 0;
     		}
-            buffer[current++] = keyToPrint;
-            ncPrintCharFormat(buffer[current-1], 48); 
+            buffer[current] = keyToPrint;
+            ncPrintCharFormat(buffer[current], 48);
+            current++; 
     	}else{
     		//Keyboard value 0 if it isn't printable	
     	}
