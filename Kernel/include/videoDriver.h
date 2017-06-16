@@ -18,5 +18,7 @@ void nncPrintExactPosition(int fila, int columna);
 void ncCopyTerminal();
 void ncScroll();
 char ncRecoverPosition(int fil, int col);
+void back();
+
 
 #endif
