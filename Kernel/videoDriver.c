@@ -25,6 +25,15 @@ void ncPrint(const char * string)
 		ncPrintChar(string[i]);
 }
 
+
+void back(){
+	currentVideo--;
+	currentVideo--;
+	*currentVideo = '\0';
+	*(currentVideo+1)= 0;
+}
+
+
 void ncPrintFormat(const char* string, int background, int font){
 	int i;
 	char format = 16*background+font;
