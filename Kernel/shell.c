@@ -31,22 +31,18 @@ void cleanLocalBuffer(char * localBuffer){
 int comparator(char * localBuffer){
 	
 	char * s1 ="man";
-	char * s2 ="echo";
-	char * s3 ="getDate";
+	char * s2 ="echo ";
+	
 
 	if(! strcmp(localBuffer,s1)){
 		return 0;
 	}
 
-	if(strncmp(localBuffer,s2,4)){
+	if(strncmp(localBuffer,s2,5)){
 		return 1;
 	}
 
-	if(! strcmp(localBuffer,s3)){
-		return 2;
-	}
-
-	return 3;
+	return 2;
 	
 }
 
@@ -55,8 +51,6 @@ void man(){
 	ncPrint("Las funcionalidades disponibles son:");
 	ncNewline();
 	ncPrint("echo - devuelve el string escrito en consola");
-	ncNewline();
-	ncPrint("getDate- devuelve la fecha actual");
 	ncNewline();
 	ncPrint("Pronto habran mas funciones");
 	ncNewline();
@@ -86,8 +80,6 @@ void analizeBuffer(char * buffer){
 		case 0: man();
 				break;
 		case 1: echo(localBuffer);
-				break;
-		case 2: getDate();
 				break;
 		default: printTerminalLine(localBuffer); 
 				 break;

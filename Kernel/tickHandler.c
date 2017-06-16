@@ -5,7 +5,14 @@ void getTime();
 void getRtcDate();
 
 void tickHandler(){
-	
+	printHello();
 	getTime();
 	getRtcDate();
+}
+
+void printHello(){
+	int columna = 20, a;
+	char titulo[35] = "| Bienvenido a nuestro sistema! |";	
+		for(a=0;a<35;a++)
+			ncPrintExactPosition(0, columna++, titulo[a]);
 }
