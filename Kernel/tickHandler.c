@@ -20,7 +20,3 @@ void printHello(){
 		for(a=0;a<35;a++)
 			ncPrintExactPosition(0, columna++, titulo[a]);
 }
-
-void scroll(){
-	scrolled = 1;
-}

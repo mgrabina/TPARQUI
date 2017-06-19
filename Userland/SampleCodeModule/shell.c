@@ -1,8 +1,9 @@
 #include <string.h>
+#include <stdio.h>
 
 #define BUFFERSIZE 500
-#define boolean = 0;
 char localBuffer[BUFFERSIZE] = {0};
+int firtsTime = 1;
 
 void callSys();
 
@@ -13,8 +14,16 @@ void getDate(){
 	callSys(3);
 }
 
-void initTerminalLine(){
+void firstTerminalLine(){
 	//ncPrint("Terminal: ");
+	if(firtsTime){
+		char msg[] = "Terminal: ";
+		callSys(1,1,msg,strlengh(msg));
+		firtsTime = 0;
+	}
+}
+
+void initTerminalLine(){
 	char msg[] = "Terminal: ";
 	callSys(1,1,msg,strlengh(msg));
 }
@@ -27,13 +36,19 @@ void cleanLocalBuffer(){
 	
 }
 
+int localBufferEmpty(){
+	if(localBuffer[0] == '\0')
+		return 1;
+	return 0;
+}
+
 int comparator(){
 	
 	char * s1 ="man";
 	char * s2 ="echo ";
 	char * s3 ="setBackColor ";
 	char * s4 ="setFontColor ";
-	
+	char * s5 ="clear";
 
 	if(! strcmp(localBuffer,s1)){
 		return 0;
@@ -48,8 +63,10 @@ int comparator(){
 	if(strncmp(localBuffer,s4,13)){
 		return 3;
 	}
-	return 4;
-	
+	if(strncmp(localBuffer,s5,5)){
+		return 4;
+	}
+	return 5;
 }
 
 void man(){
@@ -86,13 +103,15 @@ void setCursorColor(){
 	//setCursorColorVideo(c);
 	//ncNewline();
 	callSys(5,0,localBuffer);
-	callSys(2);
 }
 void setFontColor(){
 	//setFontColorVideo(c);
 	//ncNewline();
 	callSys(4,0,localBuffer);
-	callSys(2);
+}
+
+void Clear(){
+	callSys(6);
 }
 void printNotFound(){
 	//ncNewline();
@@ -103,17 +122,20 @@ void printNotFound(){
 	callSys(2);
 	callSys(1,1,localBuffer,strlengh(localBuffer));
 	callSys(1,1,notFound,strlengh(notFound));
-	callSys(2);
 }
 
 
 int main(void){
 	while(1){
-		initTerminalLine();
-		char c;
+		firstTerminalLine();
+		char c = 0;
 		int i = 0;
 		while((c = getChar()) != '\n'){
-			localBuffer[i++] = c; 
+			if(c == '\b')
+				localBuffer[--i] = '\0';
+			else if(c != 0)
+				localBuffer[i++] = c;
+			c = 0;
 		}
 		switch(comparator()){
 		case 0: man();
@@ -123,15 +145,19 @@ int main(void){
 		case 2: setCursorColor();
 				break;
 		case 3: setFontColor();
-				break;		
-		default: printNotFound(); 
-				 break;
+				break;
+		case 4: Clear();
+				break;			
+		case 5: printNotFound(); 
+				break;
+	    default: break;
 		}
 		cleanLocalBuffer();
+		callSys(2);
 		initTerminalLine();
 		i = 0;
 
-	}
+}
 
 return 0;
 

@@ -1,12 +1,7 @@
 GLOBAL systemHandler
-EXTERN systemCallSwitcher 
+EXTERN systemCallSwitcher
 
 %include "./asm/macros.m"
-
-;en rdi tengo fd
-;en rsi tengo vector
-;en rdx tengo cant bytes
-;en r10 tengo el numero del switcher
 
 
 systemHandler:

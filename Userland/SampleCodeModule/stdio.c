@@ -3,10 +3,11 @@
 void callSys();
 
 
-char getChar (){
-	char * c;
-	callSys(0, 0, c, 1);
-	return *c;
+char getChar(){
+	char c[1] = {0};
+	callSys(0, 0, c);
+	char a = *c;
+	return a;
 }
 
 

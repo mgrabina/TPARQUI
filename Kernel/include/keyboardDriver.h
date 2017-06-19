@@ -5,5 +5,5 @@
 #include <interruptions.h>
 
 void keyboardHandler();
-char getLast(int cant);
+char getLast();
 void cleanBuffer();

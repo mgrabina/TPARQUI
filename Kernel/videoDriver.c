@@ -20,6 +20,11 @@ static unsigned char selectionFrom = 0;
 static unsigned char selectionTo = 0;
 static char color = 0;
 static char fontColor = 7;
+static char auxScreen[160*25];
+static char * aux= auxScreen;
+static int copyColor = 30;
+
+
 void ncPrint(const char * string)
 {
 	int i;
@@ -28,12 +33,36 @@ void ncPrint(const char * string)
 		ncPrintCharFormat(string[i], 7);
 }
 
+void setBack(){
+	int i;
+	
+		for(i=0;i<height * width * 2 ;i++){
+			i++;
+			video[i] = 16*color+fontColor;
+		}
+
+
+}
+
+void Clear(){
+	ncClear();
+	ncNewline();
+	ncNewline();
+	ncNewline();
+}
 
 void back(){
 	currentVideo--;
 	currentVideo--;
 	*currentVideo = '\0';
 	*(currentVideo+1)= 0;
+	//Auxiliar
+	aux--;
+	aux--;
+	*aux = '\0';
+	*(aux+1)= 0;
+	
+	setBack();
 }
 
 void printLetter(char c){
@@ -47,60 +76,69 @@ void ncPrintFormat(const char* string, int background, int font){
 }
 void ncPrintCharFormat(char character, char format){
 	if(currentVideo == video + size){
-		ncScroll();
+		Clear();
 	}
 	*currentVideo = character;
 	currentVideo++;
+
 	*currentVideo = format;
 	currentVideo++;
+	//Auxiliar
+	*aux = character;
+	aux++;
+
+	*aux = format;
+	aux++;
+	
+	
 	setBack();
 }
 
 void ncCopyTerminal(){
 	int i;
 	int fromFirstRow = width * 2;
-	for( i = 0; i < size + 2 - (width - 1) * 2; i++){
-		memcpy(video+i, video+fromFirstRow+i, 1);
+	for( i = 0; i < 25; i++){
+		memcpy(video+i*160, auxScreen+(i+1)*160, 160);
+		memcpy(auxScreen+i*160,auxScreen+(i+1)*160,160);
 		//*(video+i) = *(video+fromFirstRow+i);
 	}
-	for(i = 0; i < width * 2;i++)
-		*(video + (24 * 80 * 2) + i) = '\0';
+	//for(i = 0; i < width * 2;i++)
+	//	*(video + (24 * 80 * 2) + i) = '\0';
 	currentVideo = video + (24 * 80 * 2);
 }
+
+
 
 void ncPrintExactPosition(int fila, int columna, char character){
 	int indexReal = fila * width * 2 + columna * 2;
 	*(video + indexReal) = character;
+	auxScreen[indexReal] = character;
 }
 
-void ncScroll(){
-	ncCopyTerminal();
-	scroll();
-}
+//void ncScroll(){
+//	ncCopyTerminal();
+//	scroll();
+//}
+
 char ncRecoverPosition(int fil, int col){
 	char ret;
-	ret = *(video+fil*80+col);
+	ret = auxScreen[fil*80+col];
+	//ret = *(video+fil*80+col);
 	return ret;	
 }
-void setBack(){
-	int i;
-	
-		for(i=0;i<height * width * 2 ;i++){
-			i++;
-			video[i] = 16*color+fontColor;
-		}
 
-
-}
 void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){	
 	char * mousePos ;
 	uint8_t auxX=0;
 	uint8_t auxY=0;
 	static int seleccionando = 0;
-	static char * fromSeleccion = 0;
+	static unsigned char * fromSeleccion = 0;
 	static char * buffer;
 	static int bufferPointer = 0;
 	static int bufferSize = 0;
+
+	static char * firstVideoCopyPosition=0;
+	static int firstAuxCopyPosition=0;
 	if(mouseClick == 0){ movx /= 3; movy /= 3;}	
 	auxX = mouseCurrentX + movx;
 	auxY = mouseCurrentY - movy;
@@ -109,8 +147,16 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 		int i;
 		switch(mouseClick){
 			case 0:	//Izq
-				if(seleccionando == 0 && fromSeleccion != ((char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1)){
-					fromSeleccion = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
+				if(seleccionando == 0){
+					//Vacio
+					for (int i = 0; i < bufferSize; i++)
+					{
+						buffer[i]=0;
+					}
+					bufferSize = 0;
+					//Primera vez
+					firstVideoCopyPosition = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
+					firstAuxCopyPosition = mouseCurrentY * width * 2 + mouseCurrentX * 2;
 					seleccionando = 1;
 				}
 				break;
@@ -118,26 +164,54 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 				break;
 			case 2:	//Der
 				//Paste data
-				for (int i = 0; i < bufferSize; ++i)
+				for (int i = 0; i < bufferSize; i++)
 				{
-					ncPrintChar(buffer[bufferPointer++]);
+					printLetter(buffer[i]);
 				}
-				bufferSize = 0;
-				bufferPointer = 0;
+				
 				break;
 		}
 		setBack();
 		mouseCurrentX = auxX;
 		mouseCurrentY = auxY;
 		mousePos = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
-		*mousePos = 40;	
+		*mousePos = 40;
+
+		if(seleccionando == 1 && mouseClick != 0){
+			//Termino de copiar
+			
+			int currentCopyAuxPos = firstAuxCopyPosition;
+			int lastCopyPos = mouseCurrentY * width * 2 + mouseCurrentX * 2;
+			if(firstAuxCopyPosition < lastCopyPos){
+					
+				bufferPointer = 0;
+				bufferSize=0;
+				while(currentCopyAuxPos != lastCopyPos){
+					buffer[bufferPointer] = auxScreen[currentCopyAuxPos];
+					bufferPointer++;
+					currentCopyAuxPos+=2;
+					bufferSize++;
+				}
+			}
+			seleccionando = 0;
+
+		}else if(seleccionando == 1){
+			//Copiando
+			char * aux = firstVideoCopyPosition;
+			char * currentVideoCopyPos = (char*)video + mouseCurrentY * width * 2 + mouseCurrentX * 2 + 1;
+			
+			if(firstVideoCopyPosition < currentVideoCopyPos){
+				while(aux != currentVideoCopyPos){
+					*aux = 21;
+					aux+=2;
+				}
+			}
+
+		}
 	}
-	if(seleccionando == 1){
-		*fromSeleccion = 20;
-		seleccionando = 0;
-		buffer[bufferSize] = *(fromSeleccion -1);
-		bufferSize++;
-	}
+	
+
+	
 	
 }
 
@@ -163,7 +237,7 @@ void ncNewline()
 	{
 		ncPrintCharFormat(' ', 0);
 		if(currentVideo == video + size){
-		ncScroll();
+		Clear();
 	}
 	}
 	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
@@ -197,9 +271,12 @@ void ncClear()
 {
 	int i;
 
-	for (i = 0; i < height * width; i++)
+	for (i = 0; i < height * width; i++){
 		video[i * 2] = 0;
+		auxScreen[i*2] = 0;
+	}
 	currentVideo = video;
+	aux = auxScreen;
 	setBack();
 }
 
@@ -235,3 +312,6 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 	return digits;
 }
+
+
+

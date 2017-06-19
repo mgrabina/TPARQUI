@@ -7,3 +7,4 @@ void getDate();
 void initTerminalLine();
 void setCursorColor();
 void setFontColor();
+void firstTerminalLine();

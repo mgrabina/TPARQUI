@@ -19,6 +19,7 @@ void ncCopyTerminal();
 void ncScroll();
 char ncRecoverPosition(int fil, int col);
 void back();
-
+void setBack();
+void Clear();
 
 #endif

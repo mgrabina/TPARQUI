@@ -20,7 +20,7 @@ static unsigned char keyboard[128] =
   'm', ',', '.', '/',   0,				
   '*',
     0,	' ', 0, 0, 0,   0,   0,   0,   0,   0,   0,   0,
- 	0,	0, 0, 0, 0,	
+ 	0,	0, 0, 0, 1,	
     0,	
   '-',
     0,	
@@ -53,11 +53,14 @@ static unsigned char shiftedKeyboard[128] =
 #define RSHIFT  0x36
 
 static char buffer[BUFFERSIZE]={0};
+static char bufferAux[BUFFERSIZE]={0};
 static int current=0;
+static int currentAux=0;
 static int shifted;
 static int keyReleasedPressed;
 static int key;
 static int keyToPrint=0;
+static int lasted=-1;
 
 
 
@@ -66,15 +69,25 @@ void keyboardHandler(){
   keyToPrint = 0;
   keyReleasedPressed = key & 0x80;
   if(keyboard[key] == '\n' && !keyReleasedPressed){
-    //analizeBuffer(buffer);
-    current = 0; 
+    buffer[current++] = keyboard[key];
+    for(int i = 0; i<current;i++){
+      bufferAux[i] = buffer[i];
+    }
+    currentAux = current; 
+    //current = 0;
+    lasted = -1; 
+    return;
   }else if(keyboard[key] == '\b' && !keyReleasedPressed){
-    if(current !=0){  
       back();
-      current--;
-      buffer[current] = 0;
-    }  
-  }
+      buffer[current++] = keyboard[key];
+  }else if(keyboard[key] == 1 && !keyReleasedPressed && lasted == -1){  //Flecha
+    for(int i = 0; i<currentAux;i++){
+      buffer[i] = bufferAux[i];
+      printLetter(buffer[i]);
+    } 
+    current = currentAux;
+    lasted = -lasted;
+  }else if(keyboard[key] == 1 && !keyReleasedPressed){return;}
   else if(key == RSHIFT){
 		shifted = 1;
 	}else if(key == RSHIFT_RELEASE){
@@ -99,10 +112,16 @@ void keyboardHandler(){
   } 
 }
 
-char getLast(int cant){
-  cleanBuffer();
-  while(current == 0);
-  return buffer[current-1];
+char getLast(){
+  if(current != 0)
+    return buffer[--current];
+  return '\0';
+}
+
+int hasNext(){
+  if(current != 0)
+    return 1;
+  return 0;
 }
 
 void cleanBuffer(){
