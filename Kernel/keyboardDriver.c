@@ -1,4 +1,3 @@
-#include <shell.h>
 #include <stdint.h>
 #include <lib.h>
 #include <moduleLoader.h>
@@ -59,7 +58,6 @@ static int shifted;
 static int keyReleasedPressed;
 static int key;
 static int keyToPrint=0;
-static int toConsume=0;
 
 
 
@@ -68,7 +66,7 @@ void keyboardHandler(){
   keyToPrint = 0;
   keyReleasedPressed = key & 0x80;
   if(keyboard[key] == '\n' && !keyReleasedPressed){
-    analizeBuffer(buffer);
+    //analizeBuffer(buffer);
     current = 0; 
   }else if(keyboard[key] == '\b' && !keyReleasedPressed){
     if(current !=0){  
@@ -112,20 +110,5 @@ void cleanBuffer(){
   for(i = 0; i < BUFFERSIZE; i++){
     buffer[i] = '\0';
   }
-  toConsume = 0;
   current = 0;
-}
-
-
-
-
-void consumeAll(char * otherBuffer){
-    int i = 0;
-    while(buffer[toConsume] != '\0'){
-      otherBuffer[i++] = buffer[toConsume];
-      buffer[toConsume] = '\0';
-      toConsume++;
-    }
-    current = 0;
-    toConsume = 0;
 }

@@ -13,5 +13,5 @@ systemHandler:
 	pushaq
 	call systemCallSwitcher
 	popaq
-	ret
+	iretq
 

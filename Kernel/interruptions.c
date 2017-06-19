@@ -45,6 +45,7 @@ void keyboardHandler();
 void mouseHandler();
 void startMouse();
 void tickHandler();
+void systemHandler();
 
 
 
@@ -66,6 +67,7 @@ void setInterruptions(){
 	iSetHandler(0x20, (uint64_t) irq0Handler);
 	iSetHandler(0x21, (uint64_t) irq1Handler);
 	iSetHandler(0x2C, (uint64_t) irq12Handler);
+	iSetHandler(0x80, (uint64_t) systemHandler);
 	
 	startMouse();
 	setPicMaster(0xF8);

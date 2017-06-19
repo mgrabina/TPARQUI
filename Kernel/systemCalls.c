@@ -1,11 +1,20 @@
 #include <videoDriver.h>
 #include <keyboardDriver.h>
+#include <rtc.h>
 
-void systemCallSwitcher(int fd, char * c, int cant, int option){
+void systemCallSwitcher(int option,int fd, char * c, int cant){
 	switch(option){
 		case 0 : read(fd,c,cant);
 				 break;
 		case 1 : write(fd,c,cant);
+				 break;
+		case 2 : ncNewline();
+				 break;
+		case 3 : getRtcDate();
+				 break;
+		case 4 : setFontColorVideo(c);
+				 break;
+		case 5 : setCursorColorVideo(c);
 				 break;
 	}
 }
@@ -19,7 +28,6 @@ void write(int fd, char * c, int cant){
 		}
 	}
 	ncNewline();
-	initTerminalLine();
 }
 
 void read(int fd, char * c, int cant){
@@ -30,9 +38,6 @@ void read(int fd, char * c, int cant){
 			cant--;
 	    }
 	}
-	ncNewline();
-	ncPrint(c);
-	ncNewline();
 	cleanBuffer();
-	initTerminalLine();
 }
+
