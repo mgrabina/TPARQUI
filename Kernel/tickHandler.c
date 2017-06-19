@@ -24,3 +24,6 @@ void printHello(){
 void scroll(){
 	scrolled = 1;
 }
+void noScrolled(){
+	scrolled = 0;
+}

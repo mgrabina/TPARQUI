@@ -34,7 +34,7 @@ int comparator(char * localBuffer){
 	char * s2 ="echo ";
 	char * s3 ="setBackColor ";
 	char * s4 ="setFontColor ";
-	
+	char * s5 ="clear";
 
 	if(! strcmp(localBuffer,s1)){
 		return 0;
@@ -49,8 +49,10 @@ int comparator(char * localBuffer){
 	if(strncmp(localBuffer,s4,13)){
 		return 3;
 	}
+	if(strncmp(localBuffer,s5,5))
 	return 4;
 	
+	return 5;
 }
 
 void man(){
@@ -63,7 +65,7 @@ void man(){
 	ncNewline();
 	ncPrint("setFontColor - cambia el color de la fuente");
 	ncNewline();
-	ncPrint("Pronto habran mas funciones");
+	ncPrint("clear - limpia la terminal");
 	ncNewline();
 }
 
@@ -100,6 +102,8 @@ void analizeBuffer(char * buffer){
 		case 2: setCursorColor(localBuffer);
 				break;
 		case 3: setFontColor(localBuffer);
+				break;		
+		case 4: Clear();
 				break;		
 		default: printTerminalLine(localBuffer); 
 				 break;
