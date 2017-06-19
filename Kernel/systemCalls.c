@@ -1,14 +1,8 @@
 #include <videoDriver.h>
 #include <keyboardDriver.h>
+#include <rtc.h>
 
-void systemCallSwitcher(int fd, char * c, int cant, int option){
-	switch(option){
-		case 0 : read(fd,c,cant);
-				 break;
-		case 1 : write(fd,c,cant);
-				 break;
-	}
-}
+int once = 0;
 
 void write(int fd, char * c, int cant){
 	if(fd == 1){
@@ -18,21 +12,37 @@ void write(int fd, char * c, int cant){
 			c++;
 		}
 	}
-	ncNewline();
-	initTerminalLine();
 }
 
-void read(int fd, char * c, int cant){
-	int i = 0;
+void read(int fd, char * c){
 	if(fd == 0){
-		while(cant != 0){
-			c[i++] = getLast(cant);
-			cant--;
+			if(hasNext()){
+				(*c) = getLast();
+			}
 	    }
-	}
-	ncNewline();
-	ncPrint(c);
-	ncNewline();
-	cleanBuffer();
-	initTerminalLine();
 }
+
+
+void print(){
+	ncPrint("Me llamaron");
+}
+
+
+
+void systemCallSwitcher(int option,int fd, char * c, int cant){
+	switch(option){
+		case 0 : read(fd,c);
+				 break;
+		case 1 : write(fd,c,cant);
+				 break;
+		case 2 : ncNewline();
+				 break;
+		case 3 : getRtcDate();
+				 break;
+		case 4 : setFontColorVideo(c);
+				 break;
+		case 5 : setCursorColorVideo(c);
+				 break;
+	}
+}
+

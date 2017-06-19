@@ -1,4 +1,3 @@
-#include <shell.h>
 #include <stdint.h>
 #include <lib.h>
 #include <moduleLoader.h>
@@ -61,8 +60,8 @@ static int shifted;
 static int keyReleasedPressed;
 static int key;
 static int keyToPrint=0;
-static int toConsume=0;
 static int lasted=-1;
+
 
 
 void keyboardHandler(){
@@ -70,19 +69,17 @@ void keyboardHandler(){
   keyToPrint = 0;
   keyReleasedPressed = key & 0x80;
   if(keyboard[key] == '\n' && !keyReleasedPressed){
+    buffer[current++] = keyboard[key];
     for(int i = 0; i<current;i++){
       bufferAux[i] = buffer[i];
     }
     currentAux = current; 
-    analizeBuffer(buffer);
-    current = 0;
+    //current = 0;
     lasted = -1; 
+    return;
   }else if(keyboard[key] == '\b' && !keyReleasedPressed){
-    if(current !=0){  
       back();
-      current--;
-      buffer[current] = 0;
-    }  
+      buffer[current++] = keyboard[key];
   }else if(keyboard[key] == 1 && !keyReleasedPressed && lasted == -1){  //Flecha
     for(int i = 0; i<currentAux;i++){
       buffer[i] = bufferAux[i];
@@ -115,10 +112,16 @@ void keyboardHandler(){
   } 
 }
 
-char getLast(int cant){
-  cleanBuffer();
-  while(current == 0);
-  return buffer[current-1];
+char getLast(){
+  if(current != 0)
+    return buffer[--current];
+  return '\0';
+}
+
+int hasNext(){
+  if(current != 0)
+    return 1;
+  return 0;
 }
 
 void cleanBuffer(){
@@ -126,20 +129,5 @@ void cleanBuffer(){
   for(i = 0; i < BUFFERSIZE; i++){
     buffer[i] = '\0';
   }
-  toConsume = 0;
   current = 0;
-}
-
-
-
-
-void consumeAll(char * otherBuffer){
-    int i = 0;
-    while(buffer[toConsume] != '\0'){
-      otherBuffer[i++] = buffer[toConsume];
-      buffer[toConsume] = '\0';
-      toConsume++;
-    }
-    current = 0;
-    toConsume = 0;
 }
