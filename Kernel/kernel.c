@@ -15,7 +15,17 @@ extern uint8_t endOfKernel;
 static const uint64_t PageSize = 0x1000;
 
 static void * const shell = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x500000;
+static void * const holaMundo = (void*)0x600000;
+
+static void * entry = (void *) 0x3008; //usamos la segunda entrada de la tabla de pagina PDP
+
+//mapeamos el modulo en la direccion fisica
+//hacemos que la entrada de la tabla PDP apunte a la direccion fisica
+void map(void * fisica, void * module){
+	memcpy(fisica,module,10000);
+	*((uint64_t *)entry) = fisica;
+}
+
 
 typedef int (*EntryPoint)();
 
@@ -49,7 +59,8 @@ void * initializeKernelBinary()
 	ncNewline();
 	void * moduleAddresses[] = {
 		shell,
-		sampleDataModuleAddress
+		holaMundo
+
 	};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
@@ -89,6 +100,13 @@ int main()
 	ncClear();	
 	setInterruptions();
 	ncNewline();ncNewline();
-	((EntryPoint)shell)();
+	map(0x1000000,shell);
+	((EntryPoint)*((uint64_t *)entry))();
+	//((EntryPoint)holaMundo)(); esto es para llamar directamente al modulo holaMundo
+	//((EntryPoint)shell)(); esto es para llamar directamente alm modulo shell
+	//ncPrint("Decida que modulo se desea correr:");
+	//ncPrint("Los modulos posibles son: shell - 0 / holaMundo - 1");
+
 	while (1);
 }
+
