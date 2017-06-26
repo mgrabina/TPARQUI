@@ -104,16 +104,20 @@ void ip(){
 	while((c=getLast()) == '\0'){	
 	}
 		if(c== 'a'){
+			Clear();
 			map(0x1000000,shell);	
 			((EntryPoint)*((uint64_t *)entry))();
 			ip();
 	}else if(c=='b'){
+		Clear();
 		map(0x1000000,holaMundo);	
 		((EntryPoint)*((uint64_t *)entry))();
-		
+		ncNewline();
 		ip();
+
 	}else{
 		ncPrint("No valido.");
+		ip();
 	}
 }
 int main()

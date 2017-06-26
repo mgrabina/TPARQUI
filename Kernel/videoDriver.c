@@ -169,7 +169,7 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 				{
 					printLetter(buffer[i]);
 				}
-				
+				agregarBuffer(buffer, bufferSize);			
 				break;
 		}
 		setBack();
@@ -193,7 +193,7 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 					currentCopyAuxPos+=2;
 					bufferSize++;
 				}
-				agregarBuffer(buffer, bufferSize);
+	
 			}
 			seleccionando = 0;
 

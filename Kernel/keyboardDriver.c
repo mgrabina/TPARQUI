@@ -133,8 +133,9 @@ void cleanBuffer(){
 }
 
 void agregarBuffer(char * bufferVideo, int bufferSize){
-	int i =0 ;	
-	for(;i<bufferSize;i++){
-		buffer[i] = bufferVideo[i];	
+	int i =current, j=bufferSize-1;	
+	for(;i<bufferSize;i++,j--){
+		buffer[i] = bufferVideo[j];	
+    current++;
 	}	
 }
