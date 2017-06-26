@@ -131,3 +131,10 @@ void cleanBuffer(){
   }
   current = 0;
 }
+
+void agregarBuffer(char * bufferVideo, int bufferSize){
+	int i =0 ;	
+	for(;i<bufferSize;i++){
+		buffer[i] = bufferVideo[i];	
+	}	
+}

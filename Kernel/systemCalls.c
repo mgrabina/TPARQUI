@@ -43,7 +43,8 @@ void systemCallSwitcher(int option,int fd, char * c, int cant){
 				 break;
 		case 5 : setCursorColorVideo(c);
 				 break;
-		case 6 : Clear();
+		case 6 : Clear(); break;
+		case 7: ip();
 	             break;
 	}
 }

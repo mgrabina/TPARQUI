@@ -4,7 +4,7 @@
 #define BUFFERSIZE 500
 char localBuffer[BUFFERSIZE] = {0};
 int firtsTime = 1;
-
+int static flag = 1;
 void callSys();
 
 void getDate(){
@@ -13,7 +13,10 @@ void getDate(){
 	callSys(2);
 	callSys(3);
 }
-
+void exit(){
+	flag = 0;
+	callSys(6);
+}
 void firstTerminalLine(){
 	//ncPrint("Terminal: ");
 	if(firtsTime){
@@ -49,11 +52,14 @@ int comparator(){
 	char * s3 ="setBackColor ";
 	char * s4 ="setFontColor ";
 	char * s5 ="clear";
-
+	char * s6 ="exit";
+	
 	if(! strcmp(localBuffer,s1)){
 		return 0;
 	}
-
+if(! strcmp(localBuffer,s6)){
+		return 5;
+	}
 	if(strncmp(localBuffer,s2,5)){
 		return 1;
 	}
@@ -66,7 +72,7 @@ int comparator(){
 	if(strncmp(localBuffer,s5,5)){
 		return 4;
 	}
-	return 5;
+	return 6;
 }
 
 void man(){
@@ -90,6 +96,13 @@ void man(){
 	char setFontColor[] = "setFontColor - cambia el color de la fuente";
 	callSys(2);
 	callSys(1,1,setFontColor,strlengh(setFontColor));
+	callSys(2);
+	char a[] = "clear - limpiar la pantalla";
+	callSys(1,1,a, strlengh(a));
+	callSys(2);
+	char b[] = "exit - salir del modulo";
+	callSys(1,1,b, strlengh(b));
+	
 }
 
 void echo(){
@@ -147,16 +160,20 @@ int main(void){
 		case 3: setFontColor();
 				break;
 		case 4: Clear();
-				break;			
-		case 5: printNotFound(); 
+				break;
+		case 5: exit();
+			break;			
+		case 6: printNotFound(); 
 				break;
 	    default: break;
 		}
+		
 		cleanLocalBuffer();
 		callSys(2);
 		initTerminalLine();
 		i = 0;
 
+	if(!flag) break;
 }
 
 return 0;

@@ -1,6 +1,7 @@
 #include <videoDriver.h>
 #include <lib.h>
 #include <tickHandler.h>
+#include <keyboardDriver.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
@@ -192,6 +193,7 @@ void ncPrintMousePointer(unsigned char movx,unsigned char movy, int mouseClick){
 					currentCopyAuxPos+=2;
 					bufferSize++;
 				}
+				agregarBuffer(buffer, bufferSize);
 			}
 			seleccionando = 0;
 

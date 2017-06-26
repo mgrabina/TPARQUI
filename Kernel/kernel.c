@@ -95,13 +95,34 @@ void * initializeKernelBinary()
 
 void systemHandler(int a,char *c,int b,int d);
 
+void ip(){
+	char c;
+	cleanBuffer();	
+	ncPrint("Elija el modulo deseado:");ncNewline();
+	ncPrint("a - Shell");ncNewline();
+	ncPrint("b - Hola Mundo");ncNewline();
+	while((c=getLast()) == '\0'){	
+	}
+		if(c== 'a'){
+			map(0x1000000,shell);	
+			((EntryPoint)*((uint64_t *)entry))();
+			ip();
+	}else if(c=='b'){
+		map(0x1000000,holaMundo);	
+		((EntryPoint)*((uint64_t *)entry))();
+		
+		ip();
+	}else{
+		ncPrint("No valido.");
+	}
+}
 int main()
 {	
 	ncClear();	
 	setInterruptions();
 	ncNewline();ncNewline();
-	map(0x1000000,shell);
-	((EntryPoint)*((uint64_t *)entry))();
+	ip();
+	
 	//((EntryPoint)holaMundo)(); esto es para llamar directamente al modulo holaMundo
 	//((EntryPoint)shell)(); esto es para llamar directamente alm modulo shell
 	//ncPrint("Decida que modulo se desea correr:");

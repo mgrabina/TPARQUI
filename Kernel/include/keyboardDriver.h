@@ -7,3 +7,4 @@
 void keyboardHandler();
 char getLast();
 void cleanBuffer();
+void agregarBuffer(char * bufferVideo, int bufferSize);

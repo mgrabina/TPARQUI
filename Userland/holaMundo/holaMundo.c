@@ -2,5 +2,7 @@
 
 int main(void){
 	printf("Hola mundo");
-	while(1)
+printf(", nos volvemos! ");
+		
+return 0;
 }
